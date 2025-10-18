@@ -10,8 +10,10 @@ import importlib
 from . import Util as UT
 importlib.reload(UT)
 import maya.cmds as cmds
+from . import Util as Jutil
+importlib.reload(Jutil)
 
-ROOT_RESOURCE_DIR = 'C:/Users/SIPHAT/OneDrive/เอกสาร/maya/2024/scripts/mayaPySideProject_661310548/Image'
+ROOT_RESOURCE_DIR = 'C:/Users/ICT68/Documents/maya/2025/scripts/mayaPySideProject_661310548/Image'
 
 class JointWindowDialog(QtWidgets.QDialog):
 	def __init__(self, parent=None):
@@ -51,7 +53,7 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.createButton = QtWidgets.QPushButton('CreateJoint')
 		self.createButton.setFixedWidth(70)	
 		self.createButton.setFixedHeight(60)
-		self.createButton.clicked.connect(cmds.joint)	
+		self.createButton.clicked.connect(cmds.joint)
 		self.InsertButton = QtWidgets.QPushButton('InsertJoint')
 		self.InsertButton.setFixedWidth(70)
 		self.InsertButton.setFixedHeight(60)
@@ -122,16 +124,18 @@ class JointWindowDialog(QtWidgets.QDialog):
 		#############################################################
 		self.LRALayout = QtWidgets.QHBoxLayout()
 		self.LRALabel = QtWidgets.QLabel('Location Rotation Axes')
-		self.LRAOffButton = QtWidgets.QPushButton('ON')
-		self.LRAOffButton.setFixedWidth(70)	
-		self.LRAOffButton.setFixedHeight(30)
-		self.LRAOnButton = QtWidgets.QPushButton('OFF')
+		self.LRAOnButton = QtWidgets.QPushButton('ON')
+		self.LRAOnButton.clicked.connect(self.ConnectLRA)
 		self.LRAOnButton.setFixedWidth(70)	
 		self.LRAOnButton.setFixedHeight(30)
+		self.LRAOffButton = QtWidgets.QPushButton('OFF')
+		self.LRAOffButton.clicked.connect(self.OffLRA)	
+		self.LRAOffButton.setFixedWidth(70)	
+		self.LRAOffButton.setFixedHeight(30)
 
 		self.LRALayout.addWidget(self.LRALabel)
-		self.LRALayout.addWidget(self.LRAOffButton)
 		self.LRALayout.addWidget(self.LRAOnButton)
+		self.LRALayout.addWidget(self.LRAOffButton)
 		#############################################################
 		self.RTLayout = QtWidgets.QVBoxLayout()
 		self.RT_Top_Layout = QtWidgets.QHBoxLayout()
@@ -202,6 +206,7 @@ class JointWindowDialog(QtWidgets.QDialog):
 
 		self.Name_Button = QtWidgets.QHBoxLayout()
 		self.NameRUN_Button = QtWidgets.QPushButton('RUN')
+		self.NameRUN_Button.clicked.connect(self.RenameCreateJoint)
 		self.NameCLOSE_Button = QtWidgets.QPushButton('CLOSE')
 		self.NameCLOSE_Button.clicked.connect(self.close)
 		self.Name_Button.addWidget(self.NameRUN_Button)
@@ -264,19 +269,19 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.slider.setTickInterval(1)
 		self.slider.setStyleSheet(
 			"""
-		    QSlider::groove:horizontal {
-		        border: 1px solid #444;
-		        height: 6px;
-		        background: Black;
-		        margin: 2px 0;
-		        border-radius: 3px;
+			QSlider::groove:horizontal {
+				border: 1px solid #444;
+				height: 6px;
+				background: Black;
+				margin: 2px 0;
+				border-radius: 3px;
 		    }
-		    QSlider::handle:horizontal {
-		        background: white;
-		        border: 1px solid #5c5c5c;
-		        width: 14px;
-		        height: 14px;
-		        margin: -4px 0; 
+			QSlider::handle:horizontal {
+				background: white;
+				border: 1px solid #5c5c5c;
+				width: 14px;
+				height: 14px;
+				margin: -4px 0; 
 		        border-radius: 7px;
 		    }
 		    QSlider::handle:horizontal:hover {
@@ -336,6 +341,36 @@ class JointWindowDialog(QtWidgets.QDialog):
 
 		self.tab_Widgets.addTab(self.create_tab, "Create Joint")
 		self.tab_Widgets.addTab(self.tool_tab, "Calculate")
+
+		#####################################################
+
+	def RenameCreateJoint(self):
+		name = self.Name_LineEdit.text()
+		prefix = self.NameP_LineEdit.text()
+		suffix = self.NameS_LineEdit.text()
+		Jutil.renameSelection(name, prefix, suffix)
+
+		#########################################################
+	
+	def ConnectLRA(self):
+		sel = cmds.ls(sl=True, type="joint")
+		if not sel:
+			QtWidgets.QMessageBox.warning(self, "No Selection", "Please select at least one joint to enable LRA.")
+			return
+		
+		for jnt in sel:
+			cmds.setAttr(f"{jnt}.displayLocalAxis", 1)
+
+	def OffLRA(self):
+		sel = cmds.ls(sl=True, type="joint")
+		if not sel:
+			QtWidgets.QMessageBox.warning(self, "No Selection", "Please select at least one joint to disable LRA.")
+			return
+
+		for jnt in sel:
+			cmds.setAttr(f"{jnt}.displayLocalAxis", 0)
+
+
 
 
 
