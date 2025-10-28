@@ -12,8 +12,20 @@ importlib.reload(UT)
 import maya.cmds as cmds
 from . import Util as Jutil
 importlib.reload(Jutil)
+from . import OrientJoint as OJoint
+importlib.reload(OJoint)
+from . import MiscellaMode as MSMode
+importlib.reload(MSMode)
+from . import SelectHierarchy as SelectH
+importlib.reload(SelectH)
+from . import RunRT as RunRotate
+importlib.reload(RunRotate)
+from . import RunCreateJoint as RunCJ
+importlib.reload(RunCJ)
+from . import ClustertoVertex as CTVertex
+importlib.reload(CTVertex)
 
-ROOT_RESOURCE_DIR = 'C:/Users/ICT68/Documents/maya/2025/scripts/mayaPySideProject_661310548/Image'
+ROOT_RESOURCE_DIR = 'C:/Users/SIPHAT/OneDrive/เอกสาร/maya/2024/scripts/mayaPySideProject_661310548/Image'
 
 class JointWindowDialog(QtWidgets.QDialog):
 	def __init__(self, parent=None):
@@ -25,7 +37,7 @@ class JointWindowDialog(QtWidgets.QDialog):
 
 		self.mainLayout = QtWidgets.QVBoxLayout()
 		self.setLayout(self.mainLayout)
-		self.setStyleSheet('background-color: qLineargradient(x1:0,y1:0,x2:1, stop:0 black, stop:1 #303030);')
+		self.setStyleSheet('background-color: qLineargradient(x0:0,y0:0,x2:1, stop:0 black, stop:1 black);')
 
 		self.imageLabel = QtWidgets.QLabel()
 		self.imagePixmap = QtGui.QPixmap(f"{ROOT_RESOURCE_DIR}/resource/Image_Window.jpg")
@@ -50,21 +62,40 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.create_layout = QtWidgets.QVBoxLayout(self.create_tab)
 
 		self.create_button_layout = QtWidgets.QHBoxLayout()
-		self.createButton = QtWidgets.QPushButton('CreateJoint')
-		self.createButton.setFixedWidth(70)	
-		self.createButton.setFixedHeight(60)
-		self.createButton.clicked.connect(cmds.joint)
-		self.InsertButton = QtWidgets.QPushButton('InsertJoint')
-		self.InsertButton.setFixedWidth(70)
-		self.InsertButton.setFixedHeight(60)
-		self.InsertButton.clicked.connect(cmds.insertJoint)
-		self.MirrorButton = QtWidgets.QPushButton('MirrorJoint')
-		self.MirrorButton.setFixedWidth(70)
-		self.MirrorButton.setFixedHeight(60)
+		self.createButton = QtWidgets.QPushButton()
+		self.createButton = QtWidgets.QToolButton()
+		self.createButton.setText("CreateJoint")
+		self.createButton.setIcon(QtGui.QIcon(f"{ROOT_RESOURCE_DIR}/resource/Icon/CreateJoint.png"))
+		self.createButton.setIconSize(QtCore.QSize(64, 64))
+		self.createButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+		self.createButton.setFixedSize(80, 80)
+		self.createButton.clicked.connect(self.create_joint_with_radius)
+
+		self.InsertButton = QtWidgets.QToolButton()
+		self.InsertButton.setText("InsertJoint")
+		self.InsertButton.setIcon(QtGui.QIcon(f"{ROOT_RESOURCE_DIR}/resource/Icon/InsertJoint.png"))
+		self.InsertButton.setIconSize(QtCore.QSize(64, 64))
+		self.InsertButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+		self.InsertButton.setFixedSize(80, 80)
+		self.InsertButton.clicked.connect(self.insert_joint_with_radius)
+
+		self.MirrorButton = QtWidgets.QToolButton()
+		self.MirrorButton.setText("MirrorJoint")
+		self.MirrorButton.setIcon(QtGui.QIcon(f"{ROOT_RESOURCE_DIR}/resource/Icon/MirrorJoint.png"))
+		self.MirrorButton.setIconSize(QtCore.QSize(64, 64))
+		self.MirrorButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+		self.MirrorButton.setFixedSize(80, 80)
 		self.MirrorButton.clicked.connect(cmds.mirrorJoint)
-		self.OrientButton = QtWidgets.QPushButton('OrientJoint')
-		self.OrientButton.setFixedWidth(70)
-		self.OrientButton.setFixedHeight(60)
+
+
+
+		self.OrientButton = QtWidgets.QToolButton()
+		self.OrientButton.setText("OrientJoint")	
+		self.OrientButton.setIcon(QtGui.QIcon(f"{ROOT_RESOURCE_DIR}/resource/Icon/OrientJoint.jpg"))
+		self.OrientButton.setIconSize(QtCore.QSize(64, 64))
+		self.OrientButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+		self.OrientButton.setFixedSize(80, 80)
+		self.OrientButton.clicked.connect(self.RunOrient)
 
 		self.create_button_layout.addWidget(self.createButton)
 		self.create_button_layout.addWidget(self.InsertButton)
@@ -76,23 +107,24 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.nameLabel = QtWidgets.QLabel('DefaultRadius:')
 
 		self.nameLineEdit = QtWidgets.QLineEdit()
+		self.nameLineEdit.setFixedWidth(60)		
 		self.nameLayout.addWidget(self.nameLabel)
 		self.nameLayout.addWidget(self.nameLineEdit)
+		self.nameLayout.addStretch()
 
 		#########################################################
 		self.ClusterLayout = QtWidgets.QHBoxLayout()
 		self.ClusterButton = QtWidgets.QPushButton('ClusterJoint')
-		self.ClusterButton.setFixedWidth(50)
-		self.ClusterButton.setFixedHeight(50)
+		self.ClusterButton.setFixedWidth(70)
+		self.ClusterButton.setFixedHeight(70)
 		self.ClusterButton.clicked.connect(cmds.cluster)
-		self.nameLineEdit = QtWidgets.QLineEdit()
 		self.ClusterLayout.addWidget(self.ClusterButton)
-		self.ClusterLayout.addWidget(self.nameLineEdit)
 		############################################################
 		self.tool_button_layout = QtWidgets.QHBoxLayout()
 		self.HierarchyButton = QtWidgets.QPushButton('HierarchyJoint')
 		self.HierarchyButton.setFixedWidth(70)	
 		self.HierarchyButton.setFixedHeight(60)	
+		self.HierarchyButton.clicked.connect(self.RunSelectHierarchy)
 		self.ParentButton = QtWidgets.QPushButton('ParentJoint')
 		self.ParentButton.setFixedWidth(70)
 		self.ParentButton.setFixedHeight(60)
@@ -106,17 +138,26 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.tool_button_layout.addWidget(self.ConstaintButton)
 		##############################################################
 		self.RadiusLayout = QtWidgets.QHBoxLayout()
-		self.nameLabel = QtWidgets.QLabel('Radius:')
+		self.nameR_Label = QtWidgets.QLabel('Radius:')
 
 
-		self.nameLineEdit = QtWidgets.QLineEdit()
-		self.RadiusLayout.addWidget(self.nameLabel)
-		self.RadiusLayout.addWidget(self.nameLineEdit)
+		self.nameR_LineEdit = QtWidgets.QLineEdit()
+		self.nameR_LineEdit.setFixedWidth(60)
+		self.RunRDButton = QtWidgets.QPushButton('RUN')
+		self.RunRDButton.clicked.connect(self.RunRadius)
+		self.RunRDButton.setFixedWidth(70)	
+		self.RunRDButton.setFixedHeight(30)	
+		self.RadiusLayout.addWidget(self.nameR_Label)
+		self.RadiusLayout.addWidget(self.nameR_LineEdit)
+		self.RadiusLayout.addWidget(self.RunRDButton)
+		self.RadiusLayout.addStretch()
 		##############################################################
 		self.component_button_layout = QtWidgets.QHBoxLayout()
 		self.componentButton = QtWidgets.QPushButton('component [F8]')
+		self.componentButton.clicked.connect(self.SelectLRAMode)
 		self.MiscellaneousLabel = QtWidgets.QLabel('Miscellaneous')
 		self.MScheckBox = QtWidgets.QCheckBox()
+		self.MScheckBox.clicked.connect(self.RunMiscella)
 		self.component_button_layout.addWidget(self.componentButton)
 		self.component_button_layout.addWidget(self.MiscellaneousLabel)
 		self.component_button_layout.addWidget(self.MScheckBox)
@@ -169,7 +210,10 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.RTButton = QtWidgets.QPushButton('RUN')
 		self.RTButton.setFixedWidth(40)	
 		self.RTButton.setFixedHeight(25)
+		self.RTButton.clicked.connect(self.RunRotateAxes)
 		self.RTLButton.addWidget(self.RTButton)
+
+
 
 		self.RT_LayoutXYZ.addWidget(self.RTLabelX)	
 		self.RT_LayoutXYZ.addWidget(self.RTcheckBoxX)
@@ -223,7 +267,7 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.frame = QtWidgets.QFrame()
 		self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
 		self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
-		self.frame.setStyleSheet("background-color: #222222;")
+		self.frame.setStyleSheet('background-color: qLineargradient(x0:0,y0:0,x2:1, stop:0 #176082, stop:1 #086C99);')
 
 		# ใส่ layout ของ NameAll ลงใน frame
 		self.frameLayout = QtWidgets.QVBoxLayout(self.frame)
@@ -275,18 +319,18 @@ class JointWindowDialog(QtWidgets.QDialog):
 				background: Black;
 				margin: 2px 0;
 				border-radius: 3px;
-		    }
+			}
 			QSlider::handle:horizontal {
 				background: white;
 				border: 1px solid #5c5c5c;
 				width: 14px;
 				height: 14px;
 				margin: -4px 0; 
-		        border-radius: 7px;
-		    }
-		    QSlider::handle:horizontal:hover {
-		        background: #99FFBF;
-		    }
+				border-radius: 7px;
+			}
+			QSlider::handle:horizontal:hover {
+				background: #99FFBF;
+			}
 		"""
 		)
 
@@ -320,6 +364,7 @@ class JointWindowDialog(QtWidgets.QDialog):
 		##########################################################
 		self.Tool_Button = QtWidgets.QHBoxLayout()
 		self.ToolRUN_Button = QtWidgets.QPushButton('RUN')
+		self.ToolRUN_Button.clicked.connect(self.RunCalculate)
 		self.ToolCLOSE_Button = QtWidgets.QPushButton('CLOSE')
 		self.ToolCLOSE_Button.clicked.connect(self.close)
 		self.Tool_Button.addWidget(self.ToolRUN_Button)
@@ -343,6 +388,35 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.tab_Widgets.addTab(self.tool_tab, "Calculate")
 
 		#####################################################
+	def create_joint_with_radius(self):
+		"""สร้าง joint พร้อม radius จากช่อง DefaultRadius"""
+		try:
+			radius_value = float(self.nameLineEdit.text())
+		except ValueError:
+			QtWidgets.QMessageBox.warning(self, "Invalid Input", "Please enter a valid number for Default Radius.")
+			return
+		
+		jnt = cmds.joint(radius=radius_value)
+		cmds.select(jnt)
+
+	def insert_joint_with_radius(self):
+		"""แทรก joint พร้อม radius จากช่อง DefaultRadius"""
+		try:
+			radius_value = float(self.nameLineEdit.text())
+		except ValueError:
+			QtWidgets.QMessageBox.warning(self, "Invalid Input", "Please enter a valid number for Default Radius.")
+			return
+
+		sel = cmds.ls(sl=True, type="joint")
+		if not sel:
+			QtWidgets.QMessageBox.warning(self, "No Selection", "Please select a joint to insert.")
+			return
+
+		new_jnt = cmds.insertJoint(sel[0])
+		cmds.setAttr(f"{new_jnt}.radius", radius_value)
+		cmds.select(new_jnt)
+
+		#####################################################
 
 	def RenameCreateJoint(self):
 		name = self.Name_LineEdit.text()
@@ -351,6 +425,40 @@ class JointWindowDialog(QtWidgets.QDialog):
 		Jutil.renameSelection(name, prefix, suffix)
 
 		#########################################################
+	def RunRadius(self):
+		try:
+			# ✅ ดึงค่าจากช่องป้อน Radius (ไม่ใช่ปุ่ม)
+			radius_value = float(self.nameR_LineEdit.text())
+		except ValueError:
+			QtWidgets.QMessageBox.warning(self, "Invalid Input", "Please enter a valid number for Radius.")
+			return
+
+		sel = cmds.ls(sl=True, type="joint")
+		if not sel:
+			QtWidgets.QMessageBox.warning(self, "No Selection", "Please select at least one joint to set radius.")
+			return
+
+		# ✅ ตั้ง radius ให้ joint ที่เลือก
+		for jnt in sel:
+			cmds.setAttr(f"{jnt}.radius", radius_value)
+
+		cmds.inViewMessage(amg=f"<hl>Radius set to:</hl> {radius_value}", pos='midCenter', fade=True)
+
+	def convertSelectedClusterToVertex(self):
+		sels = cmds.ls(sl=True)
+		if not sels:
+			cmds.warning("Select cluster handle(s) first")
+			return
+		positions = []
+		for c in sels:
+			pos = CTVertex.clusterToVertex(c)
+			positions.append(pos)
+		cmds.select(clear=True)
+		for i, p in enumerate(positions):
+			loc = cmds.spaceLocator()[0]
+			cmds.xform(loc, t=p, ws=True)
+
+
 	
 	def ConnectLRA(self):
 		sel = cmds.ls(sl=True, type="joint")
@@ -370,10 +478,62 @@ class JointWindowDialog(QtWidgets.QDialog):
 		for jnt in sel:
 			cmds.setAttr(f"{jnt}.displayLocalAxis", 0)
 
+	def RunRotateAxes(self):
+		RunRotate.RunRotateAxes(self)
+
+
+	def SelectLRAMode(self):
+		try:
+			import maya.cmds as cmds
+
+
+			is_component = cmds.selectMode(q=True, component=True)
+
+			if not is_component:
+
+				cmds.selectMode(component=True)
+				cmds.selectType(joint=True)
+				self.componentButton.setStyleSheet("background-color: #3BA55D; color: white; font-weight: bold;")
+				cmds.inViewMessage(amg='<hl>Component Mode:</hl> Joint LRA Active', pos='midCenter', fade=True)
+			else:
+
+				cmds.selectMode(object=True)
+				self.componentButton.setStyleSheet("")  # กลับเป็นสีปกติ
+				cmds.inViewMessage(amg='<hl>Object Mode:</hl> Joint Selection Active', pos='midCenter', fade=True)
+
+		except Exception as e:
+			QtWidgets.QMessageBox.warning(self, "Error", f"Cannot toggle component mode:\n{e}")
 
 
 
+	def RunOrient(self):
+		sel = cmds.ls(sl=True, type="joint")
+		OJoint.run_orient_joint()
 
+
+	def RunMiscella(self):
+		MSMode.ToggleMiscellaneousMode(self)
+
+
+
+	def RunSelectHierarchy(self):
+
+		SelectH.select_hierarchy()  
+
+	####################### TAB 2 #########################	
+
+	def RunCalculate(self):
+		try:
+			joint_count = self.slider_value.value()
+			radius = float(self.RDLineEdit.text())
+		except ValueError:
+			QtWidgets.QMessageBox.warning(self, "Invalid Input", "Please enter a valid radius value.")
+			return
+
+		try:
+			RunCJ.RunCreateJointOnCluster(joint_count, radius)
+		except Exception as e:
+			QtWidgets.QMessageBox.critical(self, "Error", f"Failed to run calculation:\n{e}")
 
 
 def run():
@@ -386,4 +546,5 @@ def run():
 	ptr = wrapInstance(int(omui.MQtUtil.mainWindow()), QtWidgets.QWidget)
 	ui = JointWindowDialog(parent=ptr)
 	ui.show()
+
 
