@@ -1,9 +1,7 @@
 import maya.cmds as cmds
-
-
 def run_orient_joint():
 	sel = cmds.ls(sl=True, type="joint")
-
+########################################################################
 	if not sel:
 		QtWidgets.QMessageBox.warning(None, "No Selection", "Please select at least one joint to orient.")
 		return
