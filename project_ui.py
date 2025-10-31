@@ -26,7 +26,7 @@ importlib.reload(CTVertex)
 from . import project_util_mirrrorJoint as mirrorJ
 importlib.reload(mirrorJ)
 
-ROOT_RESOURCE_DIR = 'C:/Users/SIPHAT/OneDrive/เอกสาร/maya/2024/scripts/mayaPySideProject_661310548/Image'
+ROOT_RESOURCE_DIR = 'C:/Users/SIPHAT/OneDrive/เอกสาร/maya/2024/scripts/mayaPySideProject_661310548/Icons'
 
 class JointWindowDialog(QtWidgets.QDialog):
 	def __init__(self, parent=None):
