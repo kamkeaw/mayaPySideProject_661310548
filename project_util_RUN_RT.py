@@ -1,20 +1,10 @@
 import maya.cmds as cmds
 
-# หากโค้ดนี้อยู่ในไฟล์ RunRT.py และถูกเรียกจาก main.py ที่ใช้ PySide, 
-# QtWidgets จะต้องถูกเรียกใช้ผ่าน 'self' หรือถูก import ไว้ที่นี่
 
 def RunRotateAxes(self):
-    """
-    หมุน LRA Component หรือ Object ที่ถูกเลือก โดยใช้ค่าจาก UI Checkbox
-    เทียบเท่ากับ MEL: rotate -r -os -p 0 0 0;
-    """
-    
-    # ในการใช้ QMessageBox ใน RunRT.py คุณต้องแน่ใจว่าได้เข้าถึง QtWidgets 
-    # ผ่าน self.QtWidgets หรือ import ไว้ (จะสมมติว่าคุณจัดการการ import แล้ว)
     try:
         QtWidgets = self.QtWidgets 
     except:
-        # Fallback หากไม่มีการเข้าถึง self.QtWidgets (อาจต้องแก้ที่ main.py)
         try:
             from PySide6 import QtWidgets
         except ImportError:
@@ -41,7 +31,6 @@ def RunRotateAxes(self):
         QtWidgets.QMessageBox.warning(None, "No Angle", "Please select a rotation degree (90, 180, or 270).")
         return
 
-    # 2. กำหนดค่าการหมุนสำหรับแกน X, Y, Z
     axes_str = []
     rot_x = deg_sum if self.RTcheckBoxX.isChecked() else 0
     rot_y = deg_sum if self.RTcheckBoxY.isChecked() else 0
@@ -55,11 +44,8 @@ def RunRotateAxes(self):
         QtWidgets.QMessageBox.warning(None, "No Axis", "Please select an axis (X, Y, or Z).")
         return
 
-    # 3. ใช้ cmds.rotate() เพื่อทำการหมุน
+
     try:
-        # - relative=True (r): หมุนแบบเพิ่มค่าจากปัจจุบัน
-        # - objectSpace=True (os): หมุนใน Object Space (Local Space)
-        # - pivot=(0, 0, 0) (p/fo): หมุนรอบตัวเอง (เทียบเท่า -fo 0 0 0)
         cmds.rotate(
             rot_x, rot_y, rot_z, 
             relative=True, 

@@ -8,24 +8,22 @@ import maya.OpenMayaUI as omui
 import os
 import importlib
 import maya.mel as mel
-from . import Util as UT
-importlib.reload(UT)
 import maya.cmds as cmds
-from . import Util as Jutil
+from . import project_util_Name as Jutil
 importlib.reload(Jutil)
-from . import OrientJoint as OJoint
+from . import project_util_OrientJoint as OJoint
 importlib.reload(OJoint)
-from . import MiscellaMode as MSMode
+from . import project_util_MiscellaMode as MSMode
 importlib.reload(MSMode)
-from . import SelectHierarchy as SelectH
+from . import project_util_SelectHierarchy as SelectH
 importlib.reload(SelectH)
-from . import RunRT as RunRotate
+from . import project_util_RUN_RT as RunRotate
 importlib.reload(RunRotate)
-from . import RunCreateJoint as RunCJ
+from . import project_util_RunCreateJoint as RunCJ
 importlib.reload(RunCJ)
-from . import ClustertoVertex as CTVertex
+from . import project_util_ClustertoVertex as CTVertex
 importlib.reload(CTVertex)
-from . import mirrrorJoint as mirrorJ
+from . import project_util_mirrrorJoint as mirrorJ
 importlib.reload(mirrorJ)
 
 ROOT_RESOURCE_DIR = 'C:/Users/SIPHAT/OneDrive/เอกสาร/maya/2024/scripts/mayaPySideProject_661310548/Image'

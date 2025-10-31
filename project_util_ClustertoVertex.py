@@ -1,7 +1,5 @@
 def clusterToVertex(clusterHandle):
 	import maya.cmds as cmds
-
-
 	history = cmds.listHistory(clusterHandle) or []
 
 
@@ -11,8 +9,6 @@ def clusterToVertex(clusterHandle):
 		return []
 
 	clusterDeformer = clusterDeformers[0]  
-
-
 	verts = cmds.percent(clusterDeformer, q=True, v=True)
 	if not verts:
 		cmds.warning(f"No vertices found for {clusterDeformer}")
