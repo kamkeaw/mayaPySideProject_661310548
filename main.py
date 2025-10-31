@@ -7,6 +7,7 @@ except:
 import maya.OpenMayaUI as omui
 import os
 import importlib
+import maya.mel as mel
 from . import Util as UT
 importlib.reload(UT)
 import maya.cmds as cmds
@@ -24,6 +25,8 @@ from . import RunCreateJoint as RunCJ
 importlib.reload(RunCJ)
 from . import ClustertoVertex as CTVertex
 importlib.reload(CTVertex)
+from . import mirrrorJoint as mirrorJ
+importlib.reload(mirrorJ)
 
 ROOT_RESOURCE_DIR = 'C:/Users/SIPHAT/OneDrive/เอกสาร/maya/2024/scripts/mayaPySideProject_661310548/Image'
 
@@ -37,7 +40,7 @@ class JointWindowDialog(QtWidgets.QDialog):
 
 		self.mainLayout = QtWidgets.QVBoxLayout()
 		self.setLayout(self.mainLayout)
-		self.setStyleSheet('background-color: qLineargradient(x0:0,y0:0,x2:1, stop:0 black, stop:1 black);')
+		self.setStyleSheet('background-color: qLineargradient(x0:0,y0:0,x2:1, stop:0 #1D1E36, stop:1 #1D1E36);')
 
 		self.imageLabel = QtWidgets.QLabel()
 		self.imagePixmap = QtGui.QPixmap(f"{ROOT_RESOURCE_DIR}/resource/Image_Window.jpg")
@@ -65,36 +68,115 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.createButton = QtWidgets.QPushButton()
 		self.createButton = QtWidgets.QToolButton()
 		self.createButton.setText("CreateJoint")
-		self.createButton.setIcon(QtGui.QIcon(f"{ROOT_RESOURCE_DIR}/resource/Icon/CreateJoint.png"))
+		pixmap = QtGui.QPixmap(f"{ROOT_RESOURCE_DIR}/resource/Icon/CreateJoint.png")
+		scaled_pixmap = pixmap.scaled(QtCore.QSize(64, 64), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+		self.createButton.setIcon(QtGui.QIcon(scaled_pixmap))
+
 		self.createButton.setIconSize(QtCore.QSize(64, 64))
 		self.createButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-		self.createButton.setFixedSize(80, 80)
+		self.createButton.setFixedSize(80, 90)
+
+		self.createButton.setStyleSheet("""
+			QToolButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
+
 		self.createButton.clicked.connect(self.create_joint_with_radius)
+
 
 		self.InsertButton = QtWidgets.QToolButton()
 		self.InsertButton.setText("InsertJoint")
-		self.InsertButton.setIcon(QtGui.QIcon(f"{ROOT_RESOURCE_DIR}/resource/Icon/InsertJoint.png"))
+		pixmap = QtGui.QPixmap(f"{ROOT_RESOURCE_DIR}/resource/Icon/InsertJoint.png")
+		scaled_pixmap = pixmap.scaled(QtCore.QSize(64, 64), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+		self.InsertButton.setIcon(QtGui.QIcon(scaled_pixmap))
+
 		self.InsertButton.setIconSize(QtCore.QSize(64, 64))
 		self.InsertButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-		self.InsertButton.setFixedSize(80, 80)
-		self.InsertButton.clicked.connect(self.insert_joint_with_radius)
+		self.InsertButton.setFixedSize(80, 90)
 
+		self.InsertButton.setStyleSheet("""
+			QToolButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
+		self.InsertButton.clicked.connect(self.insert_joint_with_radius)
 		self.MirrorButton = QtWidgets.QToolButton()
 		self.MirrorButton.setText("MirrorJoint")
-		self.MirrorButton.setIcon(QtGui.QIcon(f"{ROOT_RESOURCE_DIR}/resource/Icon/MirrorJoint.png"))
+		pixmap = QtGui.QPixmap(f"{ROOT_RESOURCE_DIR}/resource/Icon/MirrorJoint.png")
+		scaled_pixmap = pixmap.scaled(QtCore.QSize(64, 64), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+		self.MirrorButton.setIcon(QtGui.QIcon(scaled_pixmap))
+
 		self.MirrorButton.setIconSize(QtCore.QSize(64, 64))
 		self.MirrorButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-		self.MirrorButton.setFixedSize(80, 80)
-		self.MirrorButton.clicked.connect(cmds.mirrorJoint)
+		self.MirrorButton.setFixedSize(80, 90)
 
+		self.MirrorButton.setStyleSheet("""
+			QToolButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
 
-
+		self.MirrorButton.clicked.connect(self.mirrorJoint)
 		self.OrientButton = QtWidgets.QToolButton()
 		self.OrientButton.setText("OrientJoint")	
-		self.OrientButton.setIcon(QtGui.QIcon(f"{ROOT_RESOURCE_DIR}/resource/Icon/OrientJoint.jpg"))
+		pixmap = QtGui.QPixmap(f"{ROOT_RESOURCE_DIR}/resource/Icon/OrientJoint.png")
+		scaled_pixmap = pixmap.scaled(QtCore.QSize(64, 64), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+		self.OrientButton.setIcon(QtGui.QIcon(scaled_pixmap))
+
 		self.OrientButton.setIconSize(QtCore.QSize(64, 64))
 		self.OrientButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
-		self.OrientButton.setFixedSize(80, 80)
+		self.OrientButton.setFixedSize(80, 90)
+
+		self.OrientButton.setStyleSheet("""
+			QToolButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
 		self.OrientButton.clicked.connect(self.RunOrient)
 
 		self.create_button_layout.addWidget(self.createButton)
@@ -114,24 +196,134 @@ class JointWindowDialog(QtWidgets.QDialog):
 
 		#########################################################
 		self.ClusterLayout = QtWidgets.QHBoxLayout()
-		self.ClusterButton = QtWidgets.QPushButton('ClusterJoint')
-		self.ClusterButton.setFixedWidth(70)
-		self.ClusterButton.setFixedHeight(70)
+		self.ClusterButton = QtWidgets.QToolButton()
+		self.ClusterButton.setText("Cluster")	
+		pixmap = QtGui.QPixmap(f"{ROOT_RESOURCE_DIR}/resource/Icon/Cluster.png")
+		scaled_pixmap = pixmap.scaled(QtCore.QSize(64, 64), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+		self.ClusterButton.setIcon(QtGui.QIcon(scaled_pixmap))
+
+		self.ClusterButton.setIconSize(QtCore.QSize(64, 64))
+		self.ClusterButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+		self.ClusterButton.setFixedSize(80, 90)
+
+		self.ClusterButton.setStyleSheet("""
+			QToolButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
 		self.ClusterButton.clicked.connect(cmds.cluster)
+
+		self.Clusterimage = QtWidgets.QLabel()  # ใช้ QLabel แทน QWidget
+		pixmap = QtGui.QPixmap(f"{ROOT_RESOURCE_DIR}/resource/Image_Window_small.jpg")
+		scaledC_pixmap = pixmap.scaled(
+			QtCore.QSize(225, 150),
+			QtCore.Qt.KeepAspectRatio,
+			QtCore.Qt.SmoothTransformation
+		)
+		self.Clusterimage.setPixmap(scaledC_pixmap)
+
 		self.ClusterLayout.addWidget(self.ClusterButton)
+		self.ClusterLayout.addWidget(self.Clusterimage)
+		self.ClusterLayout.setAlignment(QtCore.Qt.AlignCenter)
+
 		############################################################
 		self.tool_button_layout = QtWidgets.QHBoxLayout()
 		self.HierarchyButton = QtWidgets.QPushButton('HierarchyJoint')
-		self.HierarchyButton.setFixedWidth(70)	
-		self.HierarchyButton.setFixedHeight(60)	
+		self.HierarchyButton = QtWidgets.QToolButton()
+		self.HierarchyButton.setText("Hierarchy")	
+		pixmap = QtGui.QPixmap(f"{ROOT_RESOURCE_DIR}/resource/Icon/Hierachy.png")
+		scaled_pixmap = pixmap.scaled(QtCore.QSize(64, 64), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+		self.HierarchyButton.setIcon(QtGui.QIcon(scaled_pixmap))
+
+		self.HierarchyButton.setIconSize(QtCore.QSize(64, 64))
+		self.HierarchyButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+		self.HierarchyButton.setFixedSize(80, 90)
+
+		self.HierarchyButton.setStyleSheet("""
+			QToolButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
 		self.HierarchyButton.clicked.connect(self.RunSelectHierarchy)
-		self.ParentButton = QtWidgets.QPushButton('ParentJoint')
-		self.ParentButton.setFixedWidth(70)
-		self.ParentButton.setFixedHeight(60)
+		self.ParentButton = QtWidgets.QPushButton()
+		self.ParentButton = QtWidgets.QToolButton()
+		self.ParentButton.setText("Parent")	
+		pixmap = QtGui.QPixmap(f"{ROOT_RESOURCE_DIR}/resource/Icon/Parent.png")
+		scaled_pixmap = pixmap.scaled(QtCore.QSize(64, 64), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+		self.ParentButton.setIcon(QtGui.QIcon(scaled_pixmap))
+
+		self.ParentButton.setIconSize(QtCore.QSize(64, 64))
+		self.ParentButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+		self.ParentButton.setFixedSize(80, 90)
+
+		self.ParentButton.setStyleSheet("""
+			QToolButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
 		self.ParentButton.clicked.connect(cmds.parent)
+
 		self.ConstaintButton = QtWidgets.QPushButton('ConstaintJoint')
-		self.ConstaintButton.setFixedWidth(70)
-		self.ConstaintButton.setFixedHeight(60)
+		self.ConstaintButton = QtWidgets.QToolButton()
+		self.ConstaintButton.setText("Constaint")	
+		pixmap = QtGui.QPixmap(f"{ROOT_RESOURCE_DIR}/resource/Icon/Constain.png")
+		scaled_pixmap = pixmap.scaled(QtCore.QSize(64, 64), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+		self.ConstaintButton.setIcon(QtGui.QIcon(scaled_pixmap))
+
+		self.ConstaintButton.setIconSize(QtCore.QSize(64, 64))
+		self.ConstaintButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+		self.ConstaintButton.setFixedSize(80, 90)
+		self.ConstaintButton.clicked.connect(cmds.aimConstraint)
+
+		self.ConstaintButton.setStyleSheet("""
+			QToolButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
 	
 		self.tool_button_layout.addWidget(self.HierarchyButton)
 		self.tool_button_layout.addWidget(self.ParentButton)
@@ -144,6 +336,23 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.nameR_LineEdit = QtWidgets.QLineEdit()
 		self.nameR_LineEdit.setFixedWidth(60)
 		self.RunRDButton = QtWidgets.QPushButton('RUN')
+
+		self.RunRDButton.setStyleSheet("""
+			QPushButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
 		self.RunRDButton.clicked.connect(self.RunRadius)
 		self.RunRDButton.setFixedWidth(70)	
 		self.RunRDButton.setFixedHeight(30)	
@@ -154,10 +363,27 @@ class JointWindowDialog(QtWidgets.QDialog):
 		##############################################################
 		self.component_button_layout = QtWidgets.QHBoxLayout()
 		self.componentButton = QtWidgets.QPushButton('component [F8]')
+		self.componentButton.setStyleSheet("""
+			QPushButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
 		self.componentButton.clicked.connect(self.SelectLRAMode)
 		self.MiscellaneousLabel = QtWidgets.QLabel('Miscellaneous')
 		self.MScheckBox = QtWidgets.QCheckBox()
-		self.MScheckBox.clicked.connect(self.RunMiscella)
+
+		self.MScheckBox.clicked.connect(self.CheckBoxMis)
 		self.component_button_layout.addWidget(self.componentButton)
 		self.component_button_layout.addWidget(self.MiscellaneousLabel)
 		self.component_button_layout.addWidget(self.MScheckBox)
@@ -166,10 +392,42 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.LRALayout = QtWidgets.QHBoxLayout()
 		self.LRALabel = QtWidgets.QLabel('Location Rotation Axes')
 		self.LRAOnButton = QtWidgets.QPushButton('ON')
+		self.LRAOnButton.setStyleSheet("""
+			QPushButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
 		self.LRAOnButton.clicked.connect(self.ConnectLRA)
 		self.LRAOnButton.setFixedWidth(70)	
 		self.LRAOnButton.setFixedHeight(30)
 		self.LRAOffButton = QtWidgets.QPushButton('OFF')
+		self.LRAOffButton.setStyleSheet("""
+			QPushButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
 		self.LRAOffButton.clicked.connect(self.OffLRA)	
 		self.LRAOffButton.setFixedWidth(70)	
 		self.LRAOffButton.setFixedHeight(30)
@@ -177,6 +435,7 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.LRALayout.addWidget(self.LRALabel)
 		self.LRALayout.addWidget(self.LRAOnButton)
 		self.LRALayout.addWidget(self.LRAOffButton)
+		self.LRALayout.addStretch()
 		#############################################################
 		self.RTLayout = QtWidgets.QVBoxLayout()
 		self.RT_Top_Layout = QtWidgets.QHBoxLayout()
@@ -208,6 +467,22 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.RTcheckBoxZ = QtWidgets.QCheckBox()
 		self.RTLButton = QtWidgets.QHBoxLayout()
 		self.RTButton = QtWidgets.QPushButton('RUN')
+		self.RTButton.setStyleSheet("""
+			QPushButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
 		self.RTButton.setFixedWidth(40)	
 		self.RTButton.setFixedHeight(25)
 		self.RTButton.clicked.connect(self.RunRotateAxes)
@@ -250,8 +525,40 @@ class JointWindowDialog(QtWidgets.QDialog):
 
 		self.Name_Button = QtWidgets.QHBoxLayout()
 		self.NameRUN_Button = QtWidgets.QPushButton('RUN')
+		self.NameRUN_Button.setStyleSheet("""
+			QPushButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
 		self.NameRUN_Button.clicked.connect(self.RenameCreateJoint)
 		self.NameCLOSE_Button = QtWidgets.QPushButton('CLOSE')
+		self.NameCLOSE_Button.setStyleSheet("""
+			QPushButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
 		self.NameCLOSE_Button.clicked.connect(self.close)
 		self.Name_Button.addWidget(self.NameRUN_Button)
 		self.Name_Button.addWidget(self.NameCLOSE_Button)
@@ -263,7 +570,7 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.NameAll_Layout.addLayout(self.Name_Button)
 		##############################################################
 
-				# ===== ใส่ Frame ครอบ Layout นี้ =====
+	
 		self.frame = QtWidgets.QFrame()
 		self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
 		self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -316,12 +623,12 @@ class JointWindowDialog(QtWidgets.QDialog):
 			QSlider::groove:horizontal {
 				border: 1px solid #444;
 				height: 6px;
-				background: Black;
+				background: white;
 				margin: 2px 0;
 				border-radius: 3px;
 			}
 			QSlider::handle:horizontal {
-				background: white;
+				background: #2A3F70;
 				border: 1px solid #5c5c5c;
 				width: 14px;
 				height: 14px;
@@ -348,24 +655,57 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.slider_layout.addWidget(self.slider)
 		self.slider_layout.addWidget(self.slider_value)
 
-
-		
-
 		##########################################################
 		self.RadiusLayoutS = QtWidgets.QHBoxLayout()
 		self.RadiusNameS = QtWidgets.QLabel('Radius:')
 
 
 		self.RDLineEdit = QtWidgets.QLineEdit()
+		self.RDLineEdit.setFixedWidth(60)
+
 		self.RadiusLayoutS.addWidget(self.RadiusNameS)
 		self.RadiusLayoutS.addWidget(self.RDLineEdit)
+		self.RadiusLayoutS.addStretch()	
 
 
 		##########################################################
 		self.Tool_Button = QtWidgets.QHBoxLayout()
 		self.ToolRUN_Button = QtWidgets.QPushButton('RUN')
+		self.ToolRUN_Button.setStyleSheet("""
+			QPushButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
+
 		self.ToolRUN_Button.clicked.connect(self.RunCalculate)
 		self.ToolCLOSE_Button = QtWidgets.QPushButton('CLOSE')
+		self.ToolCLOSE_Button.setStyleSheet("""
+			QPushButton {
+				background-color: #1B2842;
+				color: white;
+				font-weight: bold;
+				border-radius: 15px;
+				border: 2px solid #1B84C4;
+				padding: 5px;
+			}
+			QToolButton:hover {
+				background-color: #2A3F70;
+			}
+			QToolButton:pressed {
+				background-color: #3D569C;
+			}
+		""")
 		self.ToolCLOSE_Button.clicked.connect(self.close)
 		self.Tool_Button.addWidget(self.ToolRUN_Button)
 		self.Tool_Button.addWidget(self.ToolCLOSE_Button)
@@ -377,19 +717,53 @@ class JointWindowDialog(QtWidgets.QDialog):
 		self.tool_layout.addLayout(self.Tool_Button)
 		self.tool_layout.addStretch()
 
-
 		self.tool_tab.setLayout(self.tool_layout)
-
-
-
-
 
 		self.tab_Widgets.addTab(self.create_tab, "Create Joint")
 		self.tab_Widgets.addTab(self.tool_tab, "Calculate")
+		self.tab_Widgets.setStyleSheet("""
+			QTabWidget::pane {
+				border: none;
+				background: #1D1E36;
+			}
+
+			QTabBar::tab {
+				background: #1D1E36;
+				color: white;
+				padding: 6px 20px;
+				border: 1px solid #1B84C4;
+				border-top-left-radius: 8px;
+				border-top-right-radius: 8px;
+			}
+
+			QTabBar::tab:selected {
+				background: #2A3F70;
+				color: #99FFBF;
+			}
+
+			QTabBar::tab:hover {
+				background: #2A3F70;
+			}
+		""")
+
 
 		#####################################################
+		self.imageTabLabel = QtWidgets.QLabel()
+		self.imageTabLabel.setAlignment(QtCore.Qt.AlignCenter)
+		self.imageTabLabel.setScaledContents(True)  
+		self.imageTabPixmap = QtGui.QPixmap(f"{ROOT_RESOURCE_DIR}/resource/Image_Window23.jpg")
+		scaledS_pixmap = self.imageTabPixmap.scaled(
+				QtCore.QSize(900, 500),
+				QtCore.Qt.KeepAspectRatio,
+				QtCore.Qt.SmoothTransformation
+		)
+
+		self.imageTabLabel.setPixmap(scaledS_pixmap)
+		self.imageTabLabel.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+		self.tool_layout.addWidget(self.imageTabLabel)
+
+		##########################################################
 	def create_joint_with_radius(self):
-		"""สร้าง joint พร้อม radius จากช่อง DefaultRadius"""
 		try:
 			radius_value = float(self.nameLineEdit.text())
 		except ValueError:
@@ -400,7 +774,6 @@ class JointWindowDialog(QtWidgets.QDialog):
 		cmds.select(jnt)
 
 	def insert_joint_with_radius(self):
-		"""แทรก joint พร้อม radius จากช่อง DefaultRadius"""
 		try:
 			radius_value = float(self.nameLineEdit.text())
 		except ValueError:
@@ -427,7 +800,6 @@ class JointWindowDialog(QtWidgets.QDialog):
 		#########################################################
 	def RunRadius(self):
 		try:
-			# ✅ ดึงค่าจากช่องป้อน Radius (ไม่ใช่ปุ่ม)
 			radius_value = float(self.nameR_LineEdit.text())
 		except ValueError:
 			QtWidgets.QMessageBox.warning(self, "Invalid Input", "Please enter a valid number for Radius.")
@@ -438,26 +810,10 @@ class JointWindowDialog(QtWidgets.QDialog):
 			QtWidgets.QMessageBox.warning(self, "No Selection", "Please select at least one joint to set radius.")
 			return
 
-		# ✅ ตั้ง radius ให้ joint ที่เลือก
 		for jnt in sel:
 			cmds.setAttr(f"{jnt}.radius", radius_value)
 
 		cmds.inViewMessage(amg=f"<hl>Radius set to:</hl> {radius_value}", pos='midCenter', fade=True)
-
-	def convertSelectedClusterToVertex(self):
-		sels = cmds.ls(sl=True)
-		if not sels:
-			cmds.warning("Select cluster handle(s) first")
-			return
-		positions = []
-		for c in sels:
-			pos = CTVertex.clusterToVertex(c)
-			positions.append(pos)
-		cmds.select(clear=True)
-		for i, p in enumerate(positions):
-			loc = cmds.spaceLocator()[0]
-			cmds.xform(loc, t=p, ws=True)
-
 
 	
 	def ConnectLRA(self):
@@ -485,8 +841,6 @@ class JointWindowDialog(QtWidgets.QDialog):
 	def SelectLRAMode(self):
 		try:
 			import maya.cmds as cmds
-
-
 			is_component = cmds.selectMode(q=True, component=True)
 
 			if not is_component:
@@ -511,13 +865,12 @@ class JointWindowDialog(QtWidgets.QDialog):
 		OJoint.run_orient_joint()
 
 
-	def RunMiscella(self):
-		MSMode.ToggleMiscellaneousMode(self)
-
+	def CheckBoxMis(self):
+		self.MScheckBox.isChecked()
+		MSMode.RunMiscella2(self)
 
 
 	def RunSelectHierarchy(self):
-
 		SelectH.select_hierarchy()  
 
 	####################### TAB 2 #########################	
@@ -534,6 +887,11 @@ class JointWindowDialog(QtWidgets.QDialog):
 			RunCJ.RunCreateJointOnCluster(joint_count, radius)
 		except Exception as e:
 			QtWidgets.QMessageBox.critical(self, "Error", f"Failed to run calculation:\n{e}")
+
+	#########################################################
+
+	def mirrorJoint(self):
+		mirrorJ.run_mirror_joint_options(self)
 
 
 def run():
